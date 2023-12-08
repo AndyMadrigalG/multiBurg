@@ -1,0 +1,59 @@
+#patch grub4dos to reduce uneccessary boot debug messages, etc. See Tutorial #57 for details
+#/grub/patchg4d.g4b
+
+#remove autonumber boot entries
+write 0x8274 0x2000 > nul
+graphicsmode 3
+
+#remove any previous splashimage
+splashimage
+
+graphicsmode -1 640 > nul
+splashimage /grub/BlueLight.xpm.gz
+
+# remove menu setting
+/grub/menusetting.gz u 
+
+#Normal text black with cyan background, Highlighted menu=yellow text with cyan background, Help text=red with light=blue background, Heading is yellow text with white background
+color white/black yellow/cyan light-red/light-blue yellow/white
+
+
+#reset key map
+setkey
+#change key map for UK keyboard
+setkey at doublequote
+setkey doublequote at
+setkey tilde bar
+setkey numbersign backslash
+
+
+title Menu 0 No splashimage - default menu scheme
+configfile /grub/Menu0.lst
+
+title Menu 1 aurora_800x600x24.bmp.gz\naurora_800x600x24.bmp.gz
+configfile /grub/Menu1.lst
+
+title Menu 2 background_cli_1024x768x24.bmp.gz\nbackground_cli_1024x768x24.bmp.gz
+configfile /grub/Menu2.lst
+
+title Menu 3 lblue_1400x900x24.bmp.gz\nlblue_1400x900x24.bmp.gz
+configfile /grub/Menu3.lst
+
+title Menu 4 nicepair_800x600x24.bmp.gz\nnicepair_800x600x24.bmp.gz
+configfile /grub/Menu4.lst
+
+title Menu 5 nicepair_1024x768x24.bmp.gz\nnicepair_1024x768x24.bmp.gz
+configfile /grub/Menu5.lst
+
+title Menu 6 purple_1024x768x24.bmp.gz\npurple_1024x768x24.bmp.gz
+configfile /grub/Menu6.lst
+
+title Menu 7 RoyalPalaceMadrid_640x480x24.bmp.gz\nRoyalPalaceMadrid_640x480x24.bmp.gz
+configfile /grub/Menu7.lst
+
+title Menu 8 WINPE_1280x800x24.bmp.gz with UniFont File loaded\nWINPE_1280x800x24.bmp.gz
+configfile /grub/Menu8.lst
+
+
+
+

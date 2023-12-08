@@ -1,0 +1,42 @@
+!BAT
+#patch to get rid of grub4dos startup text!
+#first check if already done and exit if it has!
+
+cat --locate="Running menu" --number=1  ()/grldr  > nul || goto :EOF
+
+#Max locate string length=16 bytes
+#Do not exceed original string length
+#End of string is a 0 byte (\0)
+
+cat --locate="Try (hd0,0 )" --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="EXT2: " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="NTFS5: " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="FAT32: " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="FAT16: " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="FAT12: " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="non-MS: " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="skip " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="Extended: " --number=1 --replace=\0\0 (hd0)+20 > nul
+cat --locate="invalid or null" --number=1 --replace=\0\0 (hd0)+20 > nul
+
+cat --locate="Initialize var" --number=1 --replace=\0\0 ()/grldr > nul
+cat --locate="Starting cmain" --number=1 --replace=\0\0 ()/grldr > nul
+cat --locate="Running menu" --number=1 --replace=\0\0 ()/grldr > nul
+
+#Default Help text:
+#patch default: Use the %c and %c keys to highlight an entry.
+#replace with:  Use the four cursor keys to select an entry.\0
+#other strings:  
+#              Press ENTER or 'b' to boot. Press 'e' to edit the commands before booting, or 'c' for a command line.
+#              Press 'p' to gain privileged control etc....
+              
+#change message to use four cursor keys as < and > are valid keys
+cat --locate="Use the %c and %" --number=1 --replace="Use the four cursor keys to select an entry.\0" ()/grldr  > nul
+
+#Don't tell user how to edit the menu!
+cat --locate="Press \'e\' to edi" --number=1 --replace="\0" ()/grldr  > nul
+
+echo Patching finished - press a key to reboot...
+pause
+
+reboot

@@ -1,0 +1,71 @@
+﻿# stop menu number at RHS of title and other unwanted messages
+debug off
+
+# Load font
+if "%FONT%"=="" font /grub/unifont.hex.gz  
+
+#autonumber all entries = FF, use 01 to just number bootable entries
+write 0x8274 0x20FF > nul
+
+#graphicsmode is only required if bmp is not standard size!
+set GMODE=
+graphicsmode -1 800  && set GMODE=800
+graphicsmode -1 1024  && set GMODE=1024
+graphicsmode -1 1280 && set GMODE=1280
+if not "%GMODE%"=="1280" debug on && pause --wait=3 WARNING: 1280 XRES NOT SUPPORTED! XRES %GMODE% HAS BEEN SET! && debug off
+echo Loading /grub/WINPE_1280x800x24.bmp.gz - please wait...
+splashimage /grub/WINPE_1280x800x24.bmp.gz
+
+# define colours
+set black=0 && set blue=1 && set green=2 && set cyan=3 && set red=4 && set magenta=5 && set brown=6 && set lgray=7 && set lgrey=7
+set dgrey=8 && set dgray=8 && set lblue=9 && set lgreen=A && set lcyan=B && set lred=C && set lmagenta=D && set yellow=E && set white=F
+#colors set in pairs background+foreground (if splashimage then only highlight and standard console text have a background colour - all rest use transparent background)
+
+color normal=0x%white% highlight=0x%lblue%%black% helptext=0x%red% heading=0x%green% standard=0x%black%%lcyan% border=0x%lblue%
+
+# wordspacing and linespacing normally set to 0, borderwidth=0 for no border, 1 for thin border, etc.
+# /grub/menusetting u    will restore max menu grub4dos default
+set wdspace=0
+set lnspace=0
+set topstart=3
+set rstart=5
+set noitems=10
+set menuw=70
+set bdwidth=0
+set tophelp=15
+/grub/menusetting.gz u
+/grub/menusetting.gz   %wdspace% %lnspace% %bdwidth% %tophelp% %noitems% %topstart% %menuw% %rstart%
+
+# write heading - colour set by $[0133]
+write (md)0x220+1 !BAT\necho -n -P:0000 $[0133]   --- MENU 8 UTF 1280x800x24 UniFont ---    WINPE_1280x800x24.bmp.gz           \0 > nul
+initscript (md)0x220+1
+
+
+title Main Menu\nHELP TEXT
+#clear font
+set FONT=
+configfile /grub/allmenus.lst
+
+title Reload menu
+configfile /grub/Menu8.lst
+
+title reboot (重启)
+reboot
+
+title halt (关机)
+halt
+
+title unload fontfile\nUnload UniFont
+# prevent font from loading when reload menu
+set FONT=NONE
+#clear fonts
+font
+configfile /grub/menu8.lst
+
+
+title Load unifont
+set FONT=
+configfile /grub/menu8.lst
+
+
+

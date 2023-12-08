@@ -1,0 +1,39 @@
+# stop menu number at RHS of title and other unwanted messages
+debug off
+
+#autonumber all entries = FF, use 01 to just number bootable entries
+write 0x8274 0x20FF > nul
+
+#graphicsmode is only required if bmp is not standard size!
+#graphicsmode -1 1024 > nul
+splashimage /grub/background_cli_1024x768x24.bmp.gz
+
+# define colours
+set black=0 && set blue=1 && set green=2 && set cyan=3 && set red=4 && set magenta=5 && set brown=6 && set lgray=7 && set lgrey=7
+set dgrey=8 && set dgray=8 && set lblue=9 && set lgreen=A && set lcyan=B && set lred=C && set lmagenta=D && set yellow=E && set white=F
+#colors set in pairs background+foreground (if splashimage then only highlight and standard console text have a background colour - all rest use transparent background)
+
+color normal=0x%cyan% highlight=0x%lblue%%blue% helptext=0x%lred% heading=0x%green% standard=0x%black%%lcyan% border=0x%lblue%
+
+
+# write heading - colour set by $[0144]
+write (md)0x220+1 !BAT\necho -n -P:0000 $[0144]   --- MENU 2 ---     background_cli_1024x768x24.bmp.gz                    \0 > nul
+initscript (md)0x220+1
+
+
+title Main Menu\nHELP TEXT
+configfile /grub/allmenus.lst
+
+title Reboot
+reboot
+
+title example 1
+root
+
+title example 2
+root
+
+title example 3
+root
+
+

@@ -1,0 +1,53 @@
+# stop menu number at RHS of title and other unwanted messages
+debug off
+
+#autonumber all entries = FF, use 01 to just number bootable entries
+write 0x8274 0x20FF > nul
+
+#graphicsmode is only required if bmp is not standard size!
+graphicsmode -1 1024 > nul
+# if 1400x900 not available, 1024 will be used - as image is plain, it won't be distorted
+splashimage /grub/lblue_1400x900x24.bmp.gz
+
+# define colours
+set black=0 && set blue=1 && set green=2 && set cyan=3 && set red=4 && set magenta=5 && set brown=6 && set lgray=7 && set lgrey=7
+set dgrey=8 && set dgray=8 && set lblue=9 && set lgreen=A && set lcyan=B && set lred=C && set lmagenta=D && set yellow=E && set white=F
+#colors set in pairs background+foreground (if splashimage then only highlight and standard console text have a background colour - all rest use transparent background)
+
+color normal=0x%yellow% highlight=0x%lblue%%blue% helptext=0x%black% heading=0x%red% standard=0x%black%%lcyan% border=0x%blue%
+
+
+# write heading - colour set by $[0111]
+write (md)0x220+1 !BAT\necho -n -P:0000 $[0111]  --- MENU 3 1400x900x24 ---  lblue_1400x900x24.bmp.gz                    \0 > nul
+initscript (md)0x220+1
+
+# wordspacing and linespacing normally set to 0, borderwidth=0 for no border, 1 for thin border, etc.
+# /grub/menusetting u    will restore max menu grub4dos default
+set wdspace=0
+set lnspace=0
+set topstart=10
+set rstart=5
+set noitems=10
+set menuw=70
+set bdwidth=3
+set tophelp=25
+/grub/menusetting.gz u
+/grub/menusetting.gz   %wdspace% %lnspace% %bdwidth% %tophelp% %noitems% %topstart% %menuw% %rstart%
+
+
+title Main Menu\nHELP TEXT
+configfile /grub/allmenus.lst
+
+title Reboot
+reboot
+
+title example 1
+root
+
+title example 2
+root
+
+title example 3
+root
+
+
